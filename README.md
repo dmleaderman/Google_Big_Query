@@ -230,3 +230,27 @@ The syntax for SQL queries in GoogleSQL for BigQuery.
 How to retrieve the properties of a table for a given table ID using Python
 #### [BigQuery Query Optimization & Best Practices](https://cloud.google.com/bigquery/docs/best-practices-performance-compute)
 Best practices for optimizing your query performance.
+
+from google.cloud import bigquery
+from google.oauth2 import service_account
+
+## construct credentials from service account key file
+credentials = service_account.Credentials.from_service_account_file(
+    './.ssl/pgu6-msba2024-emory_srvacct.json') ## relative file path
+## '/mnt/c/Users/PGU6/workspace-GBS/student-technology-tools/docs/gcp/.ssl/bq_srv_acct.json') ## absolute file path
+
+## construct a BigQuery client object
+client = bigquery.Client(credentials=credentials)
+
+## Your logics implementation goes below
+# Perform a query.
+QUERY = (
+    'SELECT name FROM `bigquery-public-data.usa_names.usa_1910_2013` '
+    'WHERE state = "TX" '
+    'LIMIT 5')
+query_job = client.query(QUERY)  # API request
+rows = query_job.result()  # Waits for query to finish
+
+for row in rows:
+    print(row[0]) ## by index
+    print(row.name) ## by column name
